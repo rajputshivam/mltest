@@ -1,12 +1,17 @@
 import os
 from dataclasses import dataclass
 from src.logger import logging
+
 from src.exception import CustomException
 import sys
 import pandas as pd
 import json
 import numpy as np
+import sklearn
 from sklearn.model_selection import train_test_split
+from src.components.data_cleaning import TextCleaner
+from src.components.data_transformation import DataTransformation
+from src.components.data_transformation import DataTransformationConfig
 
 
 @dataclass
@@ -17,17 +22,20 @@ class DataIngestionConfig:
 
 
 class DataIngestion:
-    def __str__(self):
+    def __init__(self):
         self.ingestion_config = DataIngestionConfig()
 
     def initiate_data_ingestion(self):
         try:
-            f = open('data/complaints-2021-05-14_08_16_.json')
+            logging.info("Starting data process")
+            #            f = open('data/complaints-2021-05-14_08_16_.json')
+            f = open('/Users/kumarshivam/IdeaProjects/New_Job1/data/complaints-2021-05-14_08_16_.json')
             logging.info("File opened")
             data = json.load(f)
             logging.info("loaded json data for dataframe.")
             df = pd.json_normalize(data)
             logging.info("reading data from source")
+
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
 
             df.to_csv(self.ingestion_config.raw_data_path, index=False, header=True)
@@ -49,4 +57,9 @@ class DataIngestion:
 
 if __name__ == '__main__':
     obj = DataIngestion()
-    obj.initiate_data_ingestion()
+    train_data, test_data = obj.initiate_data_ingestion()
+
+    data_transformation = DataTransformation()
+    train_arr,test_arr = data_transformation.initiate_data_transformation(train_data, test_data)
+
+

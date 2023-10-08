@@ -1,7 +1,13 @@
 from setuptools import find_packages, setup
 from typing import List
 
+# from setuptools import setup,find_packages
+
+# setup(name='hello',version='0.1',packages=find_packages())
+
 HYPEN_E_DOT = '-e .'
+
+
 def get_requirements(file_path: str) -> List[str]:
     requirements = []
 
